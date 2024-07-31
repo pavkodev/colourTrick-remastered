@@ -3,30 +3,41 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="stylesheet" href="./public/output.css" />
+    <link rel="stylesheet" href="../public/output.css" />
     <title>Document</title>
   </head>
   <body
-    class="flex min-h-screen flex-col items-center justify-center bg-gray-900"
+    class="flex h-screen flex-col place-content-center items-center bg-gray-900"
   >
+    <header class="flex items-center justify-center">
+      <img
+        src="src/assets/images/logo.png"
+        alt="colourTRICK logo"
+        class="block size-[90%]"
+      />
+    </header>
     <main
-      class="flex h-[80%] w-[70%] flex-col items-center border-4 text-white"
+      class="flex w-[70%] flex-col items-center justify-center border-4 text-white md:h-[60%] md:w-[60%] lg:h-[70%] lg:w-[50%]"
     >
-      <p class="text-red-900">
-        Lorem ipsum dolor sit amet consectetur adipisicing elit. Cupiditate
-        repudiandae consectetur, numquam illo rem dolor dicta illum aspernatur
-        atque exercitationem.
-      </p>
-      <p>
-        Ratione, molestias quo sequi corrupti excepturi quas similique iusto
-        distinctio perferendis nam saepe impedit, et ipsum quos eligendi
-        aliquam! Perspiciatis.
-      </p>
-      <p>
-        Molestiae rem quasi placeat cupiditate esse corporis sint aut ipsa
-        accusantium omnis sit, voluptate quis nulla asperiores? Optio,
-        asperiores incidunt.
-      </p>
+      <div
+        class="button-container flex w-[55%] flex-col items-center justify-center md:text-2xl lg:place-content-around lg:text-4xl"
+      >
+        <a
+          href="game.html"
+          class="menu-button m-4 w-[100%] border-2 p-4 text-center md:p-8 lg:p-8"
+          >Start Game!</a
+        >
+        <a
+          href="score.html"
+          class="menu-button m-4 w-[100%] border-2 p-4 text-center md:p-8 lg:p-8"
+          >Scoreboard</a
+        >
+        <a
+          href="settings.html"
+          class="menu-button m-4 w-[100%] border-2 p-4 text-center md:p-8 lg:p-8"
+          >Settings</a
+        >
+      </div>
     </main>
   </body>
 </html>
