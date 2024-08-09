@@ -1,6 +1,8 @@
 // Audio variables for use in game
-var audioPress = document.getElementById("press");
-var audioFail = document.getElementById("fail");
+var audioPress = new Audio("./assets/audio/press.mp3");
+var audioFail = new Audio("./assets/audio/fail.mp3");
+audioPress.volume = 0.25;
+audioFail.volume = 0.25;
 var Game = /** @class */ (function () {
     function Game() {
         var _this = this;
@@ -22,23 +24,28 @@ var Game = /** @class */ (function () {
         ];
         this.manageGameRound = function (_a) {
             var colour = _a.colour, word = _a.word;
-            var variablesMatch = colour == word ? true : false;
+            var isColourWordMatch = colour == word ? true : false;
             //Display the correct word
             _this.prompt.textContent = word;
             //Reset classes at start of each round
             _this.prompt.className = "";
             //Add desired tailwind classes for font colour
-            _this.prompt.className = "stroke-black text-".concat(colour, "-500");
+            _this.prompt.className = "stroke-black text-8xl text-".concat(colour, "-500");
             document.onkeydown = function (input) {
-                if ((input.key == "ArrowLeft" && variablesMatch) ||
-                    (input.key == "ArrowRight" && !variablesMatch)) {
+                if ((input.key == "ArrowLeft" && isColourWordMatch) ||
+                    (input.key == "ArrowRight" && !isColourWordMatch)) {
+                    audioPress.pause();
+                    audioPress.currentTime = 0;
+                    audioPress.play();
                     _this.score++;
                     _this.manageGameRound(_this.generateGameRound());
                 }
                 //Add "if timer reaches 0" here too
-                else if ((input.key == "ArrowLeft" && !variablesMatch) ||
-                    (input.key == "ArrowRight" && variablesMatch)) {
+                else if ((input.key == "ArrowLeft" && !isColourWordMatch) ||
+                    (input.key == "ArrowRight" && isColourWordMatch)) {
+                    audioFail.play();
                     _this.prompt.textContent = "Game Over";
+                    document.onkeydown = null;
                 }
             };
         };

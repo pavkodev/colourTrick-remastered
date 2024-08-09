@@ -1,6 +1,9 @@
 // Audio variables for use in game
-const audioPress = document.getElementById("press") as HTMLAudioElement;
-const audioFail = document.getElementById("fail") as HTMLAudioElement;
+const audioPress: HTMLAudioElement = new Audio("./assets/audio/press.mp3");
+const audioFail: HTMLAudioElement = new Audio("./assets/audio/fail.mp3");
+
+audioPress.volume = 0.25;
+audioFail.volume = 0.25;
 
 //Round variable object
 interface roundVariables {
@@ -17,7 +20,7 @@ class Game {
   //Variable for referencing timer parapgraph element
   private timer = document.getElementById("game-timer") as HTMLParagraphElement;
 
-  private score = 0;
+  private score: number = 0;
   private gameOver: number = 0;
   private colours: string[] = [
     "red",
@@ -43,15 +46,15 @@ class Game {
   }
 
   //Change to private after
-  public generateGameRound(): roundVariables {
+  private generateGameRound(): roundVariables {
     return {
       colour: this.generateRandomColour(),
       word: this.generateRandomWord(),
     };
   }
 
-  public manageGameRound = ({ colour, word }: roundVariables): void => {
-    const variablesMatch: boolean = colour == word ? true : false;
+  private manageGameRound = ({ colour, word }: roundVariables): void => {
+    const isColourWordMatch: boolean = colour == word ? true : false;
     //Display the correct word
     this.prompt.textContent = word;
 
@@ -59,22 +62,27 @@ class Game {
     this.prompt.className = "";
 
     //Add desired tailwind classes for font colour
-    this.prompt.className = `stroke-black text-${colour}-500`;
+    this.prompt.className = `stroke-black text-8xl text-${colour}-500`;
 
     document.onkeydown = (input) => {
       if (
-        (input.key == "ArrowLeft" && variablesMatch) ||
-        (input.key == "ArrowRight" && !variablesMatch)
+        (input.key == "ArrowLeft" && isColourWordMatch) ||
+        (input.key == "ArrowRight" && !isColourWordMatch)
       ) {
+        audioPress.pause();
+        audioPress.currentTime = 0;
+        audioPress.play();
         this.score++;
         this.manageGameRound(this.generateGameRound());
       }
       //Add "if timer reaches 0" here too
       else if (
-        (input.key == "ArrowLeft" && !variablesMatch) ||
-        (input.key == "ArrowRight" && variablesMatch)
+        (input.key == "ArrowLeft" && !isColourWordMatch) ||
+        (input.key == "ArrowRight" && isColourWordMatch)
       ) {
+        audioFail.play();
         this.prompt.textContent = "Game Over";
+        document.onkeydown = null;
       }
     };
   };
