@@ -1,3 +1,85 @@
+// Audio variables for use in game
+const audioPress = document.getElementById("press") as HTMLAudioElement;
+const audioFail = document.getElementById("fail") as HTMLAudioElement;
+
+//Round variable object
+interface roundVariables {
+  colour: string;
+  word: string;
+}
+
+class Game {
+  //Variable for referencing game prompt parapgraph element
+  private prompt = document.getElementById(
+    "game-prompt",
+  ) as HTMLParagraphElement;
+
+  //Variable for referencing timer parapgraph element
+  private timer = document.getElementById("game-timer") as HTMLParagraphElement;
+
+  private score = 0;
+  private gameOver: number = 0;
+  private colours: string[] = [
+    "red",
+    "orange",
+    "yellow",
+    "green",
+    "blue",
+    "pink",
+    "cyan",
+    "purple",
+  ];
+
+  constructor() {
+    this.manageGameRound(this.generateGameRound());
+  }
+
+  private generateRandomColour(): string {
+    return this.colours[Math.floor(Math.random() * this.colours.length)];
+  }
+
+  private generateRandomWord(): string {
+    return this.colours[Math.floor(Math.random() * this.colours.length)];
+  }
+
+  //Change to private after
+  public generateGameRound(): roundVariables {
+    return {
+      colour: this.generateRandomColour(),
+      word: this.generateRandomWord(),
+    };
+  }
+
+  public manageGameRound = ({ colour, word }: roundVariables): void => {
+    const variablesMatch: boolean = colour == word ? true : false;
+    //Display the correct word
+    this.prompt.textContent = word;
+
+    //Reset classes at start of each round
+    this.prompt.className = "";
+
+    //Add desired tailwind classes for font colour
+    this.prompt.className = `stroke-black text-${colour}-500`;
+
+    document.onkeydown = (input) => {
+      if (
+        (input.key == "ArrowLeft" && variablesMatch) ||
+        (input.key == "ArrowRight" && !variablesMatch)
+      ) {
+        this.score++;
+        this.manageGameRound(this.generateGameRound());
+      }
+      //Add "if timer reaches 0" here too
+      else if (
+        (input.key == "ArrowLeft" && !variablesMatch) ||
+        (input.key == "ArrowRight" && variablesMatch)
+      ) {
+        this.prompt.textContent = "Game Over";
+      }
+    };
+  };
+}
+
 const randomColour = (): string => {
   let random: number = Math.floor(Math.random() * 8);
   const colour: string[] = [
@@ -28,9 +110,11 @@ const randomWord = (): string => {
   return word[random];
 };
 
-//function for generating game prompt.
-const gameRound = (colour: string, word: string) => {
-  const prompt = document.getElementById("game-prompt");
+//function for displaying game prompt.
+const displayRound = (displayVariables: roundVariables) => {
+  const colour = displayVariables.colour;
+  const word = displayVariables.word;
+  const prompt = document.getElementById("game-prompt") as HTMLParagraphElement;
 
   if (prompt) {
     // Remove all previous classes if they exist
@@ -81,7 +165,9 @@ const gameRound = (colour: string, word: string) => {
 //Timer function
 
 const displayTimer = () => {
-  const timerDisplay = document.getElementById("game-timer")!;
+  const timerDisplay = document.getElementById(
+    "game-timer",
+  )! as HTMLParagraphElement;
   let timer: number = Date.now() + 1000 * 60;
 
   const updateInterval = setInterval(() => {
@@ -97,5 +183,11 @@ const displayTimer = () => {
   }, 25);
 };
 
+const manageRound = () => {
+  const checkRound = (): boolean => {
+    return false;
+  };
+};
+
 displayTimer();
-gameRound(randomColour(), randomWord());
+const game = new Game();

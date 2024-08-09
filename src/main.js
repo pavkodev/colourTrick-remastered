@@ -1,3 +1,64 @@
+// Audio variables for use in game
+var audioPress = document.getElementById("press");
+var audioFail = document.getElementById("fail");
+var Game = /** @class */ (function () {
+    function Game() {
+        var _this = this;
+        //Variable for referencing game prompt parapgraph element
+        this.prompt = document.getElementById("game-prompt");
+        //Variable for referencing timer parapgraph element
+        this.timer = document.getElementById("game-timer");
+        this.score = 0;
+        this.gameOver = 0;
+        this.colours = [
+            "red",
+            "orange",
+            "yellow",
+            "green",
+            "blue",
+            "pink",
+            "cyan",
+            "purple",
+        ];
+        this.manageGameRound = function (_a) {
+            var colour = _a.colour, word = _a.word;
+            var variablesMatch = colour == word ? true : false;
+            //Display the correct word
+            _this.prompt.textContent = word;
+            //Reset classes at start of each round
+            _this.prompt.className = "";
+            //Add desired tailwind classes for font colour
+            _this.prompt.className = "stroke-black text-".concat(colour, "-500");
+            document.onkeydown = function (input) {
+                if ((input.key == "ArrowLeft" && variablesMatch) ||
+                    (input.key == "ArrowRight" && !variablesMatch)) {
+                    _this.score++;
+                    _this.manageGameRound(_this.generateGameRound());
+                }
+                //Add "if timer reaches 0" here too
+                else if ((input.key == "ArrowLeft" && !variablesMatch) ||
+                    (input.key == "ArrowRight" && variablesMatch)) {
+                    _this.prompt.textContent = "Game Over";
+                }
+            };
+        };
+        this.manageGameRound(this.generateGameRound());
+    }
+    Game.prototype.generateRandomColour = function () {
+        return this.colours[Math.floor(Math.random() * this.colours.length)];
+    };
+    Game.prototype.generateRandomWord = function () {
+        return this.colours[Math.floor(Math.random() * this.colours.length)];
+    };
+    //Change to private after
+    Game.prototype.generateGameRound = function () {
+        return {
+            colour: this.generateRandomColour(),
+            word: this.generateRandomWord(),
+        };
+    };
+    return Game;
+}());
 var randomColour = function () {
     var random = Math.floor(Math.random() * 8);
     var colour = [
@@ -26,8 +87,10 @@ var randomWord = function () {
     ];
     return word[random];
 };
-//function for generating game prompt.
-var gameRound = function (colour, word) {
+//function for displaying game prompt.
+var displayRound = function (displayVariables) {
+    var colour = displayVariables.colour;
+    var word = displayVariables.word;
     var prompt = document.getElementById("game-prompt");
     if (prompt) {
         // Remove all previous classes if they exist
@@ -80,5 +143,10 @@ var displayTimer = function () {
         }
     }, 25);
 };
+var manageRound = function () {
+    var checkRound = function () {
+        return false;
+    };
+};
 displayTimer();
-gameRound(randomColour(), randomWord());
+var game = new Game();
