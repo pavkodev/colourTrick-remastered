@@ -9,7 +9,9 @@ var Game = /** @class */ (function () {
         //Variable for referencing game prompt parapgraph element
         this.prompt = document.getElementById("game-prompt");
         //Variable for referencing timer parapgraph element
-        this.timer = document.getElementById("game-timer");
+        this.timerDisplay = document.getElementById("game-timer");
+        this.countdownValue = 20;
+        this.timer = Date.now() + 1000 * this.countdownValue;
         this.score = 0;
         this.gameOver = 0;
         this.colours = [
@@ -22,6 +24,48 @@ var Game = /** @class */ (function () {
             "cyan",
             "purple",
         ];
+        this.generateRandomColour = function () {
+            return _this.colours[Math.floor(Math.random() * _this.colours.length)];
+        };
+        this.generateRandomWord = function () {
+            return _this.colours[Math.floor(Math.random() * _this.colours.length)];
+        };
+        this.generateGameRound = function () {
+            return {
+                colour: _this.generateRandomColour(),
+                word: _this.generateRandomWord(),
+            };
+        };
+        this.setTimer = function (value) {
+            _this.timerDisplay.textContent = parseFloat(String(value)).toFixed(2);
+        };
+        this.manageTimer = function () {
+            _this.updateInterval = setInterval(function () {
+                var currentTime = Date.now();
+                var timeLeft = _this.timer - currentTime;
+                if (timeLeft > 0) {
+                    _this.setTimer(timeLeft / 1000);
+                }
+                else {
+                    _this.setTimer(0);
+                    console.log("Time is 0");
+                    _this.manageGameOver();
+                    clearInterval(_this.updateInterval);
+                }
+            }, 25);
+        };
+        this.increaseTimer = function (addedSeconds) {
+            clearInterval(_this.updateInterval);
+            _this.timer += addedSeconds * 1000;
+            _this.manageTimer();
+        };
+        this.manageGameOver = function () {
+            clearInterval(_this.updateInterval);
+            audioFail.play();
+            _this.prompt.textContent = "Game Over";
+            console.log("Game over");
+            document.onkeydown = null;
+        };
         this.manageGameRound = function (_a) {
             var colour = _a.colour, word = _a.word;
             var isColourWordMatch = colour == word ? true : false;
@@ -38,32 +82,19 @@ var Game = /** @class */ (function () {
                     audioPress.currentTime = 0;
                     audioPress.play();
                     _this.score++;
+                    _this.increaseTimer(0.75);
                     _this.manageGameRound(_this.generateGameRound());
                 }
                 //Add "if timer reaches 0" here too
                 else if ((input.key == "ArrowLeft" && !isColourWordMatch) ||
                     (input.key == "ArrowRight" && isColourWordMatch)) {
-                    audioFail.play();
-                    _this.prompt.textContent = "Game Over";
-                    document.onkeydown = null;
+                    _this.manageGameOver();
                 }
             };
         };
         this.manageGameRound(this.generateGameRound());
+        this.manageTimer();
     }
-    Game.prototype.generateRandomColour = function () {
-        return this.colours[Math.floor(Math.random() * this.colours.length)];
-    };
-    Game.prototype.generateRandomWord = function () {
-        return this.colours[Math.floor(Math.random() * this.colours.length)];
-    };
-    //Change to private after
-    Game.prototype.generateGameRound = function () {
-        return {
-            colour: this.generateRandomColour(),
-            word: this.generateRandomWord(),
-        };
-    };
     return Game;
 }());
 var randomColour = function () {
@@ -133,27 +164,4 @@ var displayRound = function (displayVariables) {
         }
     }
 };
-//Timer function
-var displayTimer = function () {
-    var timerDisplay = document.getElementById("game-timer");
-    var timer = Date.now() + 1000 * 60;
-    var updateInterval = setInterval(function () {
-        var currentTime = Date.now();
-        var timeLeft = timer - currentTime;
-        if (timeLeft > 0) {
-            timerDisplay.textContent = parseFloat(String(timeLeft / 1000)).toFixed(2);
-        }
-        else {
-            timerDisplay.textContent = "meow";
-            console.log("Time is 0");
-            clearInterval(updateInterval);
-        }
-    }, 25);
-};
-var manageRound = function () {
-    var checkRound = function () {
-        return false;
-    };
-};
-displayTimer();
 var game = new Game();

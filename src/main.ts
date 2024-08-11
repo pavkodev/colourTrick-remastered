@@ -18,7 +18,13 @@ class Game {
   ) as HTMLParagraphElement;
 
   //Variable for referencing timer parapgraph element
-  private timer = document.getElementById("game-timer") as HTMLParagraphElement;
+  private timerDisplay = document.getElementById(
+    "game-timer",
+  )! as HTMLParagraphElement;
+
+  private updateInterval: number | undefined;
+  private countdownValue: number = 20;
+  private timer: number = Date.now() + 1000 * this.countdownValue;
 
   private score: number = 0;
   private gameOver: number = 0;
@@ -35,23 +41,56 @@ class Game {
 
   constructor() {
     this.manageGameRound(this.generateGameRound());
+    this.manageTimer();
   }
 
-  private generateRandomColour(): string {
+  private generateRandomColour = (): string => {
     return this.colours[Math.floor(Math.random() * this.colours.length)];
-  }
+  };
 
-  private generateRandomWord(): string {
+  private generateRandomWord = (): string => {
     return this.colours[Math.floor(Math.random() * this.colours.length)];
-  }
+  };
 
-  //Change to private after
-  private generateGameRound(): roundVariables {
+  private generateGameRound = (): roundVariables => {
     return {
       colour: this.generateRandomColour(),
       word: this.generateRandomWord(),
     };
-  }
+  };
+
+  private setTimer = (value: number) => {
+    this.timerDisplay.textContent = parseFloat(String(value)).toFixed(2);
+  };
+
+  private manageTimer = () => {
+    this.updateInterval = setInterval(() => {
+      const currentTime: number = Date.now();
+      const timeLeft: number = this.timer - currentTime;
+      if (timeLeft > 0) {
+        this.setTimer(timeLeft / 1000);
+      } else {
+        this.setTimer(0);
+        console.log("Time is 0");
+        this.manageGameOver();
+        clearInterval(this.updateInterval);
+      }
+    }, 25);
+  };
+
+  private increaseTimer = (addedSeconds: number) => {
+    clearInterval(this.updateInterval);
+    this.timer += addedSeconds * 1000;
+    this.manageTimer();
+  };
+
+  private manageGameOver = () => {
+    clearInterval(this.updateInterval);
+    audioFail.play();
+    this.prompt.textContent = "Game Over";
+    console.log("Game over");
+    document.onkeydown = null;
+  };
 
   private manageGameRound = ({ colour, word }: roundVariables): void => {
     const isColourWordMatch: boolean = colour == word ? true : false;
@@ -73,6 +112,7 @@ class Game {
         audioPress.currentTime = 0;
         audioPress.play();
         this.score++;
+        this.increaseTimer(0.75);
         this.manageGameRound(this.generateGameRound());
       }
       //Add "if timer reaches 0" here too
@@ -80,9 +120,7 @@ class Game {
         (input.key == "ArrowLeft" && !isColourWordMatch) ||
         (input.key == "ArrowRight" && isColourWordMatch)
       ) {
-        audioFail.play();
-        this.prompt.textContent = "Game Over";
-        document.onkeydown = null;
+        this.manageGameOver();
       }
     };
   };
@@ -170,32 +208,4 @@ const displayRound = (displayVariables: roundVariables) => {
   }
 };
 
-//Timer function
-
-const displayTimer = () => {
-  const timerDisplay = document.getElementById(
-    "game-timer",
-  )! as HTMLParagraphElement;
-  let timer: number = Date.now() + 1000 * 60;
-
-  const updateInterval = setInterval(() => {
-    const currentTime: number = Date.now();
-    const timeLeft: number = timer - currentTime;
-    if (timeLeft > 0) {
-      timerDisplay.textContent = parseFloat(String(timeLeft / 1000)).toFixed(2);
-    } else {
-      timerDisplay.textContent = "meow";
-      console.log("Time is 0");
-      clearInterval(updateInterval);
-    }
-  }, 25);
-};
-
-const manageRound = () => {
-  const checkRound = (): boolean => {
-    return false;
-  };
-};
-
-displayTimer();
 const game = new Game();
