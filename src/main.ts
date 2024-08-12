@@ -2,14 +2,15 @@
 const audioPress: HTMLAudioElement = new Audio("./assets/audio/press.mp3");
 const audioFail: HTMLAudioElement = new Audio("./assets/audio/fail.mp3");
 
+//Lowering volume to avoid blowing player's ears off (first-hand experience)
 audioPress.volume = 0.25;
 audioFail.volume = 0.25;
 
 //Round variable object
-interface roundVariables {
+type roundVariables = {
   colour: string;
   word: string;
-}
+};
 
 class Game {
   //Variable for referencing game prompt parapgraph element
@@ -22,12 +23,13 @@ class Game {
     "game-timer",
   )! as HTMLParagraphElement;
 
-  private updateInterval: number | undefined;
-  private countdownValue: number = 20;
-  private timer: number = Date.now() + 1000 * this.countdownValue;
+  private updateInterval: number | undefined; //Interval variable (can either be a number or undefined)
+  private countdownValue: number = 20; //Amount of seconds for round
+  private timer: number = Date.now() + 1000 * this.countdownValue; //Timer tracker
 
-  private score: number = 0;
-  private gameOver: number = 0;
+  private score: number = 0; //Score tracker
+  private gameOver: boolean = false; //Flag to check if game is over or not
+  //Array of colours used
   private colours: string[] = [
     "red",
     "orange",
@@ -39,11 +41,13 @@ class Game {
     "purple",
   ];
 
+  //Class constructor generates initial game round and starts timer
   constructor() {
     this.manageGameRound(this.generateGameRound());
     this.manageTimer();
   }
 
+  //Methods for generating random colour and word
   private generateRandomColour = (): string => {
     return this.colours[Math.floor(Math.random() * this.colours.length)];
   };
@@ -52,6 +56,7 @@ class Game {
     return this.colours[Math.floor(Math.random() * this.colours.length)];
   };
 
+  //Method combining word and colour generators
   private generateGameRound = (): roundVariables => {
     return {
       colour: this.generateRandomColour(),
@@ -59,16 +64,20 @@ class Game {
     };
   };
 
+  //Method to set timer <p> element to display timer value
   private setTimer = (value: number) => {
     this.timerDisplay.textContent = parseFloat(String(value)).toFixed(2);
   };
 
+  //Method for updating timer
   private manageTimer = () => {
     this.updateInterval = setInterval(() => {
-      const currentTime: number = Date.now();
-      const timeLeft: number = this.timer - currentTime;
+      const currentTime: number = Date.now(); //Stores current time to compare to start time
+      const timeLeft: number = this.timer - currentTime; //Checks difference between current time and start time
+      //While there is time left, update the timer
       if (timeLeft > 0) {
         this.setTimer(timeLeft / 1000);
+        //Otherwise set game over state and clear interval
       } else {
         this.setTimer(0);
         console.log("Time is 0");
@@ -78,22 +87,25 @@ class Game {
     }, 25);
   };
 
+  //Method for adding time to timer for correct guesses
   private increaseTimer = (addedSeconds: number) => {
     clearInterval(this.updateInterval);
     this.timer += addedSeconds * 1000;
     this.manageTimer();
   };
 
+  //Manages game state when user loses
   private manageGameOver = () => {
     clearInterval(this.updateInterval);
     audioFail.play();
     this.prompt.textContent = "Game Over";
     console.log("Game over");
-    document.onkeydown = null;
+    document.onkeydown = null; //Remove key listener
   };
 
+  //Manages game round generation and display
   private manageGameRound = ({ colour, word }: roundVariables): void => {
-    const isColourWordMatch: boolean = colour == word ? true : false;
+    const isColourWordMatch: boolean = colour === word ? true : false; //Boolean of if colour and word match or not
     //Display the correct word
     this.prompt.textContent = word;
 
@@ -104,6 +116,8 @@ class Game {
     this.prompt.className = `stroke-black text-8xl text-${colour}-500`;
 
     document.onkeydown = (input) => {
+      //If user enters the right inputs for match and mismatch in word-colour combos,
+      //increase score and time, and generate new round
       if (
         (input.key == "ArrowLeft" && isColourWordMatch) ||
         (input.key == "ArrowRight" && !isColourWordMatch)
@@ -115,7 +129,8 @@ class Game {
         this.increaseTimer(0.75);
         this.manageGameRound(this.generateGameRound());
       }
-      //Add "if timer reaches 0" here too
+      //If the user enters wrong input, call game-over manager method
+      //(also happens if user runs out of time, managed by manageTimer())
       else if (
         (input.key == "ArrowLeft" && !isColourWordMatch) ||
         (input.key == "ArrowRight" && isColourWordMatch)
@@ -208,4 +223,5 @@ const displayRound = (displayVariables: roundVariables) => {
   }
 };
 
+//Generate game on script load
 const game = new Game();
