@@ -14,6 +14,7 @@ var Game = /** @class */ (function () {
         this.timerDisplay = document.getElementById("game-timer");
         this.countdownValue = 20; //Amount of seconds for round
         this.timer = Date.now() + 1000 * this.countdownValue; //Timer tracker
+        this.addedTime = 0.75; //Time added on correct input
         this.score = 0; //Score tracker
         this.gameOver = false; //Flag to check if game is over or not
         //Array of colours used
@@ -80,7 +81,7 @@ var Game = /** @class */ (function () {
         //Manages game round generation and display
         this.manageGameRound = function (_a) {
             var colour = _a.colour, word = _a.word;
-            var isColourWordMatch = colour === word ? true : false; //Boolean of if colour and word match or not
+            var isColourWordMatch = colour === word; //Boolean of if colour and word match or not
             //Display the correct word
             _this.prompt.textContent = word;
             //Reset classes at start of each round
@@ -96,7 +97,7 @@ var Game = /** @class */ (function () {
                     audioPress.currentTime = 0;
                     audioPress.play();
                     _this.score++;
-                    _this.increaseTimer(0.75);
+                    _this.increaseTimer(_this.addedTime);
                     _this.manageGameRound(_this.generateGameRound());
                 }
                 //If the user enters wrong input, call game-over manager method

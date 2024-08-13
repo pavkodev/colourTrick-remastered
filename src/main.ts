@@ -26,6 +26,7 @@ class Game {
   private updateInterval: number | undefined; //Interval variable (can either be a number or undefined)
   private countdownValue: number = 20; //Amount of seconds for round
   private timer: number = Date.now() + 1000 * this.countdownValue; //Timer tracker
+  private addedTime = 0.75; //Time added on correct input
 
   private score: number = 0; //Score tracker
   private gameOver: boolean = false; //Flag to check if game is over or not
@@ -105,7 +106,7 @@ class Game {
 
   //Manages game round generation and display
   private manageGameRound = ({ colour, word }: roundVariables): void => {
-    const isColourWordMatch: boolean = colour === word ? true : false; //Boolean of if colour and word match or not
+    const isColourWordMatch: boolean = colour === word; //Boolean of if colour and word match or not
     //Display the correct word
     this.prompt.textContent = word;
 
@@ -126,7 +127,7 @@ class Game {
         audioPress.currentTime = 0;
         audioPress.play();
         this.score++;
-        this.increaseTimer(0.75);
+        this.increaseTimer(this.addedTime);
         this.manageGameRound(this.generateGameRound());
       }
       //If the user enters wrong input, call game-over manager method
