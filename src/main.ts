@@ -23,6 +23,11 @@ class Game {
     "game-timer",
   )! as HTMLParagraphElement;
 
+  //Variable for referencing score parapgraph element
+  private scoreDisplay = document.getElementById(
+    "game-score",
+  )! as HTMLParagraphElement;
+
   private updateInterval: number | undefined; //Interval variable (can either be a number or undefined)
   private countdownValue: number = 20; //Amount of seconds for round
   private timer: number = Date.now() + 1000 * this.countdownValue; //Timer tracker
@@ -74,16 +79,20 @@ class Game {
   private manageTimer = () => {
     this.updateInterval = setInterval(() => {
       const currentTime: number = Date.now(); //Stores current time to compare to start time
-      const timeLeft: number = this.timer - currentTime; //Checks difference between current time and start time
+      const timeLeft: number = (this.timer - currentTime) / 1000; //Checks difference between current time and start time
       //While there is time left, update the timer
       if (timeLeft > 0) {
-        this.setTimer(timeLeft / 1000);
+        this.setTimer(timeLeft);
         //Otherwise set game over state and clear interval
       } else {
         this.setTimer(0);
         console.log("Time is 0");
         this.manageGameOver();
         clearInterval(this.updateInterval);
+      }
+
+      if (timeLeft < 5) {
+        this.timerDisplay.classList.add("animate-low-time");
       }
     }, 25);
   };
@@ -114,7 +123,7 @@ class Game {
     this.prompt.className = "";
 
     //Add desired tailwind classes for font colour
-    this.prompt.className = `stroke-black text-8xl text-${colour}-500`;
+    this.prompt.className = `animate-prompt stroke-black text-8xl text-${colour}-500`;
 
     document.onkeydown = (input) => {
       //If user enters the right inputs for match and mismatch in word-colour combos,
@@ -126,7 +135,13 @@ class Game {
         audioPress.pause();
         audioPress.currentTime = 0;
         audioPress.play();
+
+        //Remove prompt display animation so that it can be played again
+        this.prompt.classList.remove("animate-prompt");
+        this.prompt.offsetHeight;
+
         this.score++;
+        this.scoreDisplay.textContent = `Score: ${this.score}`;
         this.increaseTimer(this.addedTime);
         this.manageGameRound(this.generateGameRound());
       }

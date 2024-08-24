@@ -730,7 +730,52 @@ video {
 }
 
 #game-prompt {
-  -webkit-text-stroke: 1px black;
+  -webkit-text-stroke: 1px #000;
+}
+
+.animate-prompt {
+  animation: prompt-fall 0.1s;
+}
+
+.animate-low-time {
+  animation: low-time 1s infinite linear;
+  animation-direction: alternate;
+}
+
+@keyframes prompt-fall {
+  0% {
+    transform: scale(3, 3) rotate(-15deg);
+  }
+
+  33% {
+    transform: scale(2, 2) rotate(-5deg);
+  }
+
+  66% {
+    transform: scale(1.5, 1.5) rotate(0deg);
+  }
+
+  100% {
+    transform: scale(1, 1);
+  }
+}
+
+@keyframes low-time {
+  0% {
+    color: #000;
+  }
+
+  33% {
+    color: #ef4444;
+  }
+
+  66% {
+    color: #ef4444;
+  }
+
+  100% {
+    color: #000;
+  }
 }
 
 @media (min-width: 768px) {

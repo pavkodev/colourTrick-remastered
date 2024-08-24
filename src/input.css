@@ -3,5 +3,42 @@
 @tailwind utilities;
 
 #game-prompt {
-  -webkit-text-stroke: 1px black;
+  -webkit-text-stroke: 1px theme("colors.black");
+}
+.animate-prompt {
+  animation: prompt-fall 0.1s;
+}
+
+.animate-low-time {
+  animation: low-time 1s infinite linear;
+  animation-direction: alternate;
+}
+@keyframes prompt-fall {
+  0% {
+    transform: scale(3, 3) rotate(-15deg);
+  }
+  33% {
+    transform: scale(2, 2) rotate(-5deg);
+  }
+  66% {
+    transform: scale(1.5, 1.5) rotate(0deg);
+  }
+  100% {
+    transform: scale(1, 1);
+  }
+}
+
+@keyframes low-time {
+  0% {
+    color: theme("colors.black");
+  }
+  33% {
+    color: theme("colors.red.500");
+  }
+  66% {
+    color: theme("colors.red.500");
+  }
+  100% {
+    color: theme("colors.black");
+  }
 }

@@ -12,6 +12,8 @@ var Game = /** @class */ (function () {
         this.prompt = document.getElementById("game-prompt");
         //Variable for referencing timer parapgraph element
         this.timerDisplay = document.getElementById("game-timer");
+        //Variable for referencing score parapgraph element
+        this.scoreDisplay = document.getElementById("game-score");
         this.countdownValue = 20; //Amount of seconds for round
         this.timer = Date.now() + 1000 * this.countdownValue; //Timer tracker
         this.addedTime = 0.75; //Time added on correct input
@@ -50,10 +52,10 @@ var Game = /** @class */ (function () {
         this.manageTimer = function () {
             _this.updateInterval = setInterval(function () {
                 var currentTime = Date.now(); //Stores current time to compare to start time
-                var timeLeft = _this.timer - currentTime; //Checks difference between current time and start time
+                var timeLeft = (_this.timer - currentTime) / 1000; //Checks difference between current time and start time
                 //While there is time left, update the timer
                 if (timeLeft > 0) {
-                    _this.setTimer(timeLeft / 1000);
+                    _this.setTimer(timeLeft);
                     //Otherwise set game over state and clear interval
                 }
                 else {
@@ -61,6 +63,9 @@ var Game = /** @class */ (function () {
                     console.log("Time is 0");
                     _this.manageGameOver();
                     clearInterval(_this.updateInterval);
+                }
+                if (timeLeft < 5) {
+                    _this.timerDisplay.classList.add("animate-low-time");
                 }
             }, 25);
         };
@@ -87,7 +92,7 @@ var Game = /** @class */ (function () {
             //Reset classes at start of each round
             _this.prompt.className = "";
             //Add desired tailwind classes for font colour
-            _this.prompt.className = "stroke-black text-8xl text-".concat(colour, "-500");
+            _this.prompt.className = "animate-prompt stroke-black text-8xl text-".concat(colour, "-500");
             document.onkeydown = function (input) {
                 //If user enters the right inputs for match and mismatch in word-colour combos,
                 //increase score and time, and generate new round
@@ -96,7 +101,11 @@ var Game = /** @class */ (function () {
                     audioPress.pause();
                     audioPress.currentTime = 0;
                     audioPress.play();
+                    //Remove prompt display animation so that it can be played again
+                    _this.prompt.classList.remove("animate-prompt");
+                    _this.prompt.offsetHeight;
                     _this.score++;
+                    _this.scoreDisplay.textContent = "Score: ".concat(_this.score);
                     _this.increaseTimer(_this.addedTime);
                     _this.manageGameRound(_this.generateGameRound());
                 }
