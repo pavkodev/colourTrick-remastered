@@ -89,10 +89,11 @@ var Game = /** @class */ (function () {
             var isColourWordMatch = colour === word; //Boolean of if colour and word match or not
             //Display the correct word
             _this.prompt.textContent = word;
+            _this.prompt.classList.add("animate-prompt");
             //Reset classes at start of each round
-            _this.prompt.className = "";
+            _this.prompt.classList.remove("text-red-500", "text-orange-500", "text-yellow-500", "text-green-500", "text-blue-500", "text-pink-500", "text-cyan-500", "text-purple-500");
             //Add desired tailwind classes for font colour
-            _this.prompt.className = "animate-prompt stroke-black text-8xl text-".concat(colour, "-500");
+            _this.prompt.classList.add("text-".concat(colour, "-500"));
             document.onkeydown = function (input) {
                 //If user enters the right inputs for match and mismatch in word-colour combos,
                 //increase score and time, and generate new round

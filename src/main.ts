@@ -119,11 +119,21 @@ class Game {
     //Display the correct word
     this.prompt.textContent = word;
 
+    this.prompt.classList.add("animate-prompt");
     //Reset classes at start of each round
-    this.prompt.className = "";
+    this.prompt.classList.remove(
+      "text-red-500",
+      "text-orange-500",
+      "text-yellow-500",
+      "text-green-500",
+      "text-blue-500",
+      "text-pink-500",
+      "text-cyan-500",
+      "text-purple-500",
+    );
 
     //Add desired tailwind classes for font colour
-    this.prompt.className = `animate-prompt stroke-black text-8xl text-${colour}-500`;
+    this.prompt.classList.add(`text-${colour}-500`);
 
     document.onkeydown = (input) => {
       //If user enters the right inputs for match and mismatch in word-colour combos,
