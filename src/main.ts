@@ -28,6 +28,11 @@ class Game {
     "game-score",
   )! as HTMLParagraphElement;
 
+  //Variable for referencing post-game buttons
+  private gameButtons = document.getElementById(
+    "game-buttons",
+  )! as HTMLDivElement;
+
   private updateInterval: number | undefined; //Interval variable (can either be a number or undefined)
   private countdownValue: number = 20; //Amount of seconds for round
   private timer: number = Date.now() + 1000 * this.countdownValue; //Timer tracker
@@ -111,10 +116,14 @@ class Game {
     this.prompt.textContent = "Game Over";
     console.log("Game over");
     document.onkeydown = null; //Remove key listener
+    //show post-game buttons
+    this.gameButtons.style.visibility = "visible";
   };
 
   //Manages game round generation and display
   private manageGameRound = ({ colour, word }: roundVariables): void => {
+    //Hide post-game buttons
+    this.gameButtons.style.visibility = "hidden";
     const isColourWordMatch: boolean = colour === word; //Boolean of if colour and word match or not
     //Display the correct word
     this.prompt.textContent = word;
@@ -249,5 +258,8 @@ const displayRound = (displayVariables: roundVariables) => {
   }
 };
 
+const startGame = () => {
+  const game = new Game();
+};
 //Generate game on script load
-const game = new Game();
+startGame();

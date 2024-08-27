@@ -14,6 +14,8 @@ var Game = /** @class */ (function () {
         this.timerDisplay = document.getElementById("game-timer");
         //Variable for referencing score parapgraph element
         this.scoreDisplay = document.getElementById("game-score");
+        //Variable for referencing post-game buttons
+        this.gameButtons = document.getElementById("game-buttons");
         this.countdownValue = 20; //Amount of seconds for round
         this.timer = Date.now() + 1000 * this.countdownValue; //Timer tracker
         this.addedTime = 0.75; //Time added on correct input
@@ -82,10 +84,14 @@ var Game = /** @class */ (function () {
             _this.prompt.textContent = "Game Over";
             console.log("Game over");
             document.onkeydown = null; //Remove key listener
+            //show post-game buttons
+            _this.gameButtons.style.visibility = "visible";
         };
         //Manages game round generation and display
         this.manageGameRound = function (_a) {
             var colour = _a.colour, word = _a.word;
+            //Hide post-game buttons
+            _this.gameButtons.style.visibility = "hidden";
             var isColourWordMatch = colour === word; //Boolean of if colour and word match or not
             //Display the correct word
             _this.prompt.textContent = word;
@@ -190,5 +196,8 @@ var displayRound = function (displayVariables) {
         }
     }
 };
+var startGame = function () {
+    var game = new Game();
+};
 //Generate game on script load
-var game = new Game();
+startGame();

@@ -41,15 +41,18 @@
       </div>
     </div>
     <div
-      class="game-buttons z-1 absolute bottom-[10%] flex w-full flex-col items-center justify-around align-top font-serif text-4xl md:bottom-[20%] md:flex-row"
+      id="game-buttons"
+      class="z-1 invisible absolute bottom-[10%] flex w-full flex-col items-center justify-around align-top font-serif text-4xl md:bottom-[20%] md:flex-row"
     >
-      <a
-        href="#"
+      <button
+        type="button"
+        onclick="startGame()"
         class="m-2 rounded border-2 border-black bg-white p-5 text-center hover:bg-slate-200"
-        >Retry</a
       >
+        Retry
+      </button>
       <a
-        href="#"
+        href="index.html"
         class="m-2 rounded border-2 border-black bg-white p-5 text-center hover:bg-slate-200"
         >Main Menu</a
       >
