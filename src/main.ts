@@ -118,6 +118,9 @@ class Game {
     document.onkeydown = null; //Remove key listener
     //show post-game buttons
     this.gameButtons.style.visibility = "visible";
+
+    //Remove prompt display animation so that it can be played again
+    this.prompt.classList.remove("animate-prompt");
   };
 
   //Manages game round generation and display

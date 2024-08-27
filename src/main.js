@@ -86,6 +86,8 @@ var Game = /** @class */ (function () {
             document.onkeydown = null; //Remove key listener
             //show post-game buttons
             _this.gameButtons.style.visibility = "visible";
+            //Remove prompt display animation so that it can be played again
+            _this.prompt.classList.remove("animate-prompt");
         };
         //Manages game round generation and display
         this.manageGameRound = function (_a) {
