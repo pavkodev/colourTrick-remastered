@@ -129,7 +129,7 @@ class Game {
     this.gameButtons.style.visibility = "hidden";
     const isColourWordMatch: boolean = colour === word; //Boolean of if colour and word match or not
     //Display the correct word
-    this.prompt.textContent = word;
+    this.prompt.textContent = word.toUpperCase();
 
     this.prompt.classList.add("animate-prompt");
     //Reset classes at start of each round
