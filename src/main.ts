@@ -2,9 +2,30 @@
 const audioPress: HTMLAudioElement = new Audio("./assets/audio/press.mp3");
 const audioFail: HTMLAudioElement = new Audio("./assets/audio/fail.mp3");
 
-//Lowering volume to avoid blowing player's ears off (first-hand experience)
-audioPress.volume = 0.25;
-audioFail.volume = 0.25;
+const soundToggle = document.getElementById(
+  "setting-sound",
+) as HTMLInputElement;
+
+if (soundToggle) {
+  soundToggle.addEventListener("change", () => {
+    if (soundToggle.checked) {
+      localStorage.setItem("soundOption", "sound");
+    } else {
+      localStorage.setItem("soundOption", "nosound");
+    }
+  });
+}
+
+const soundOption: string = localStorage.getItem("soundOption")!;
+
+if (soundOption == "sound") {
+  //Lowering volume to avoid blowing player's ears off (first-hand experience)
+  audioPress.volume = 0.25;
+  audioFail.volume = 0.25;
+} else {
+  audioPress.volume = 0.0;
+  audioFail.volume = 0.0;
+}
 
 //Round variable object
 type roundVariables = {
@@ -16,7 +37,7 @@ class Game {
   //Variable for referencing game prompt parapgraph element
   private prompt = document.getElementById(
     "game-prompt",
-  ) as HTMLParagraphElement;
+  )! as HTMLParagraphElement;
 
   //Variable for referencing timer parapgraph element
   private timerDisplay = document.getElementById(
@@ -179,90 +200,28 @@ class Game {
   };
 }
 
-const randomColour = (): string => {
-  let random: number = Math.floor(Math.random() * 8);
-  const colour: string[] = [
-    "red",
-    "orange",
-    "yellow",
-    "green",
-    "blue",
-    "pink",
-    "cyan",
-    "purple",
-  ];
-  return colour[random];
+const loadSettings = () => {
+  switch (localStorage.getItem("soundOption")) {
+    case "sound":
+      soundToggle.checked = true;
+      break;
+    case "nosound":
+      soundToggle.checked = false;
+      break;
+  }
 };
 
-const randomWord = (): string => {
-  let random: number = Math.floor(Math.random() * 8);
-  const word: string[] = [
-    "red",
-    "orange",
-    "yellow",
-    "green",
-    "blue",
-    "pink",
-    "cyan",
-    "purple",
-  ];
-  return word[random];
-};
-
-//function for displaying game prompt.
-const displayRound = (displayVariables: roundVariables) => {
-  const colour = displayVariables.colour;
-  const word = displayVariables.word;
-  const prompt = document.getElementById("game-prompt") as HTMLParagraphElement;
-
-  if (prompt) {
-    // Remove all previous classes if they exist
-    prompt.classList.remove(
-      "text-red-500",
-      "text-orange-500",
-      "text-yellow-500",
-      "text-green-500",
-      "text-blue-500",
-      "text-pink-500",
-      "text-cyan-500",
-      "text-purple-500",
-    );
-
-    // Set the prompt to the generated colour
-    prompt.textContent = word;
-
-    //Set the font colour of word to the generated colour
-    switch (colour) {
-      case "red":
-        prompt.classList.add("text-red-500");
-        break;
-      case "orange":
-        prompt.classList.add("text-orange-500");
-        break;
-      case "yellow":
-        prompt.classList.add("text-yellow-500");
-        break;
-      case "green":
-        prompt.classList.add("text-green-500");
-        break;
-      case "blue":
-        prompt.classList.add("text-blue-500");
-        break;
-      case "pink":
-        prompt.classList.add("text-pink-500");
-        break;
-      case "cyan":
-        prompt.classList.add("text-cyan-500");
-        break;
-      case "purple":
-        prompt.classList.add("text-purple-500");
-        break;
-    }
+const toggleDisplayOptions = () => {
+  const settings = document.getElementById("game-settings") as HTMLDivElement;
+  const visibility = window.getComputedStyle(settings).visibility;
+  console.log(settings.style.visibility + "-desu");
+  if (visibility === "hidden") {
+    settings.style.visibility = "visible";
+  } else if (visibility === "visible") {
+    settings.style.visibility = "hidden";
   }
 };
 
 const startGame = () => {
   const game = new Game();
 };
-//Generate game on script load
-startGame();

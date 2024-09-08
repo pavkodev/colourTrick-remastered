@@ -1,9 +1,27 @@
 // Audio variables for use in game
 var audioPress = new Audio("./assets/audio/press.mp3");
 var audioFail = new Audio("./assets/audio/fail.mp3");
-//Lowering volume to avoid blowing player's ears off (first-hand experience)
-audioPress.volume = 0.25;
-audioFail.volume = 0.25;
+var soundToggle = document.getElementById("setting-sound");
+if (soundToggle) {
+    soundToggle.addEventListener("change", function () {
+        if (soundToggle.checked) {
+            localStorage.setItem("soundOption", "sound");
+        }
+        else {
+            localStorage.setItem("soundOption", "nosound");
+        }
+    });
+}
+var soundOption = localStorage.getItem("soundOption");
+if (soundOption == "sound") {
+    //Lowering volume to avoid blowing player's ears off (first-hand experience)
+    audioPress.volume = 0.25;
+    audioFail.volume = 0.25;
+}
+else {
+    audioPress.volume = 0.0;
+    audioFail.volume = 0.0;
+}
 var Game = /** @class */ (function () {
     //Class constructor generates initial game round and starts timer
     function Game() {
@@ -131,75 +149,27 @@ var Game = /** @class */ (function () {
     }
     return Game;
 }());
-var randomColour = function () {
-    var random = Math.floor(Math.random() * 8);
-    var colour = [
-        "red",
-        "orange",
-        "yellow",
-        "green",
-        "blue",
-        "pink",
-        "cyan",
-        "purple",
-    ];
-    return colour[random];
+var loadSettings = function () {
+    switch (localStorage.getItem("soundOption")) {
+        case "sound":
+            soundToggle.checked = true;
+            break;
+        case "nosound":
+            soundToggle.checked = false;
+            break;
+    }
 };
-var randomWord = function () {
-    var random = Math.floor(Math.random() * 8);
-    var word = [
-        "red",
-        "orange",
-        "yellow",
-        "green",
-        "blue",
-        "pink",
-        "cyan",
-        "purple",
-    ];
-    return word[random];
-};
-//function for displaying game prompt.
-var displayRound = function (displayVariables) {
-    var colour = displayVariables.colour;
-    var word = displayVariables.word;
-    var prompt = document.getElementById("game-prompt");
-    if (prompt) {
-        // Remove all previous classes if they exist
-        prompt.classList.remove("text-red-500", "text-orange-500", "text-yellow-500", "text-green-500", "text-blue-500", "text-pink-500", "text-cyan-500", "text-purple-500");
-        // Set the prompt to the generated colour
-        prompt.textContent = word;
-        //Set the font colour of word to the generated colour
-        switch (colour) {
-            case "red":
-                prompt.classList.add("text-red-500");
-                break;
-            case "orange":
-                prompt.classList.add("text-orange-500");
-                break;
-            case "yellow":
-                prompt.classList.add("text-yellow-500");
-                break;
-            case "green":
-                prompt.classList.add("text-green-500");
-                break;
-            case "blue":
-                prompt.classList.add("text-blue-500");
-                break;
-            case "pink":
-                prompt.classList.add("text-pink-500");
-                break;
-            case "cyan":
-                prompt.classList.add("text-cyan-500");
-                break;
-            case "purple":
-                prompt.classList.add("text-purple-500");
-                break;
-        }
+var toggleDisplayOptions = function () {
+    var settings = document.getElementById("game-settings");
+    var visibility = window.getComputedStyle(settings).visibility;
+    console.log(settings.style.visibility + "-desu");
+    if (visibility === "hidden") {
+        settings.style.visibility = "visible";
+    }
+    else if (visibility === "visible") {
+        settings.style.visibility = "hidden";
     }
 };
 var startGame = function () {
     var game = new Game();
 };
-//Generate game on script load
-startGame();
