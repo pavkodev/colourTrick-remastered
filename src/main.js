@@ -1,6 +1,10 @@
 // Audio variables for use in game
 var audioPress = new Audio("./assets/audio/press.mp3");
 var audioFail = new Audio("./assets/audio/fail.mp3");
+//If a highscore doesn't exist, set it to 0.
+if (localStorage.getItem("highscore") === null) {
+    localStorage.setItem("highscore", "0");
+}
 var soundToggle = document.getElementById("setting-sound");
 if (soundToggle) {
     soundToggle.addEventListener("change", function () {
@@ -36,6 +40,7 @@ var Game = /** @class */ (function () {
         this.gameButtons = document.getElementById("game-buttons");
         this.countdownValue = 20; //Amount of seconds for round
         this.timer = Date.now() + 1000 * this.countdownValue; //Timer tracker
+        this.highscore = localStorage.getItem("highscore");
         this.addedTime = 0.75; //Time added on correct input
         this.score = 0; //Score tracker
         this.gameOver = false; //Flag to check if game is over or not
@@ -101,7 +106,11 @@ var Game = /** @class */ (function () {
             audioFail.play();
             _this.prompt.textContent = "Game Over";
             console.log("Game over");
-            document.onkeydown = null; //Remove key listener
+            //Remove key listener
+            document.onkeydown = null;
+            if (_this.score > Number(_this.highscore)) {
+                localStorage.setItem("highscore", _this.score.toString());
+            }
             //show post-game buttons
             _this.gameButtons.style.visibility = "visible";
             //Remove prompt display animation so that it can be played again
@@ -146,6 +155,7 @@ var Game = /** @class */ (function () {
         };
         this.manageGameRound(this.generateGameRound());
         this.manageTimer();
+        this.scoreDisplay.textContent = "Score: 0";
     }
     return Game;
 }());
@@ -158,6 +168,14 @@ var loadSettings = function () {
             soundToggle.checked = false;
             break;
     }
+};
+var loadHighscore = function () {
+    document.getElementById("highscore").textContent =
+        "Highscore: ".concat(localStorage.getItem("highscore"));
+};
+var loadData = function () {
+    loadSettings();
+    loadHighscore();
 };
 var toggleDisplayOptions = function () {
     var settings = document.getElementById("game-settings");

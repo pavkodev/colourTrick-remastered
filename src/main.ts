@@ -2,6 +2,11 @@
 const audioPress: HTMLAudioElement = new Audio("./assets/audio/press.mp3");
 const audioFail: HTMLAudioElement = new Audio("./assets/audio/fail.mp3");
 
+//If a highscore doesn't exist, set it to 0.
+if (localStorage.getItem("highscore") === null) {
+  localStorage.setItem("highscore", "0");
+}
+
 const soundToggle = document.getElementById(
   "setting-sound",
 ) as HTMLInputElement;
@@ -57,8 +62,8 @@ class Game {
   private updateInterval: number | undefined; //Interval variable (can either be a number or undefined)
   private countdownValue: number = 20; //Amount of seconds for round
   private timer: number = Date.now() + 1000 * this.countdownValue; //Timer tracker
+  private highscore = localStorage.getItem("highscore") as string;
   private addedTime = 0.75; //Time added on correct input
-
   private score: number = 0; //Score tracker
   private gameOver: boolean = false; //Flag to check if game is over or not
   //Array of colours used
@@ -77,6 +82,7 @@ class Game {
   constructor() {
     this.manageGameRound(this.generateGameRound());
     this.manageTimer();
+    this.scoreDisplay.textContent = "Score: 0";
   }
 
   //Methods for generating random colour and word
@@ -136,7 +142,12 @@ class Game {
     audioFail.play();
     this.prompt.textContent = "Game Over";
     console.log("Game over");
-    document.onkeydown = null; //Remove key listener
+    //Remove key listener
+    document.onkeydown = null;
+
+    if (this.score > Number(this.highscore)) {
+      localStorage.setItem("highscore", this.score.toString());
+    }
     //show post-game buttons
     this.gameButtons.style.visibility = "visible";
 
@@ -209,6 +220,16 @@ const loadSettings = () => {
       soundToggle.checked = false;
       break;
   }
+};
+
+const loadHighscore = () => {
+  document.getElementById("highscore")!.textContent =
+    `Highscore: ${localStorage.getItem("highscore")}`;
+};
+
+const loadData = () => {
+  loadSettings();
+  loadHighscore();
 };
 
 const toggleDisplayOptions = () => {
