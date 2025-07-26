@@ -235,11 +235,14 @@ const loadData = () => {
 const toggleDisplayOptions = () => {
   const settings = document.getElementById("game-settings") as HTMLDivElement;
   const visibility = window.getComputedStyle(settings).visibility;
-  console.log(settings.style.visibility + "-desu");
-  if (visibility === "hidden") {
-    settings.style.visibility = "visible";
-  } else if (visibility === "visible") {
-    settings.style.visibility = "hidden";
+  switch (visibility) {
+    case "hidden":
+      settings.style.visibility = "visible";
+      break;
+
+    case "visible":
+      settings.style.visibility = "hidden";
+      break;
   }
 };
 
