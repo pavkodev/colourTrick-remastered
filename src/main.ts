@@ -1,6 +1,6 @@
 // Audio variables for use in game
-const audioPress: HTMLAudioElement = new Audio("./assets/audio/press.mp3");
-const audioFail: HTMLAudioElement = new Audio("./assets/audio/fail.mp3");
+const audioPress: HTMLAudioElement = new Audio("src/assets/audio/press.mp3");
+const audioFail: HTMLAudioElement = new Audio("src/assets/audio/fail.mp3");
 
 //If a highscore doesn't exist, set it to 0.
 if (localStorage.getItem("highscore") === null) {
