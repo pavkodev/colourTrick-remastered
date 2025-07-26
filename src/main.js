@@ -1,6 +1,6 @@
 // Audio variables for use in game
-var audioPress = new Audio("./assets/audio/press.mp3");
-var audioFail = new Audio("./assets/audio/fail.mp3");
+var audioPress = new Audio("assets/audio/press.mp3");
+var audioFail = new Audio("assets/audio/fail.mp3");
 //If a highscore doesn't exist, set it to 0.
 if (localStorage.getItem("highscore") === null) {
   localStorage.setItem("highscore", "0");
